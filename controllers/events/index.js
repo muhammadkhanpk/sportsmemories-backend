@@ -1,21 +1,17 @@
-import CreateAlbum from "./create-album";
 import CreateEvent from "./create-event";
-import DeleteAlbum from "./delete-album";
 import DeleteEvent from "./delete-event";
-import GetAlbum from "./get-album";
-import GetAlbums from "./get-albums";
 import GetEvent from "./get-event";
-import GetEvents from "./get-events";
+import GetAllEvents from "./get-all-events";
 import UpdateEvent from "./update-event";
+import GetUserEvents from "./get-user-events";
+import UploadEventMedia from "./upload-event-media";
 
 export {
-  CreateAlbum,
   CreateEvent,
-  GetAlbum,
-  GetAlbums,
-  DeleteAlbum,
   DeleteEvent,
   GetEvent,
-  GetEvents,
-  UpdateEvent
+  GetAllEvents,
+  UpdateEvent,
+  GetUserEvents,
+  UploadEventMedia
 }

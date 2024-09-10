@@ -91,8 +91,6 @@ router.post('/sign-in', validateParams({
 }), loginCheck, async (req, res) => {
   try {
     const { email } = req.body;
-
-    console.log(req.user,'user is ')
     
     const response = await SignIn({ email });
 

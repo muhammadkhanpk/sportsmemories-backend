@@ -1,23 +1,17 @@
 import Event from '../../models/event';
 
-const UpdateEvent = async({
-  name,
-  description,
-  media,
-  eventId
+const UploadEventMedia = async({
+  eventId,
+  newMedia
 }) => {
   const updatedEvent = await Event.findOneAndUpdate({
     _id: eventId  
   }, {
-    $set: {
-      name,
-      description,
-      media,
-    }
+    $addToSet: { media: { $each: newMedia }}
   }, {
     new: true
   })
   return updatedEvent.toObject();
 }
 
-export default UpdateEvent
+export default UploadEventMedia

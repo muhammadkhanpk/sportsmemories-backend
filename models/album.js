@@ -5,9 +5,13 @@ const schema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   eventId: { type: String, required: true },
-  media: { type: [String], default: []}
+  albumType: { type: String, required: true },
+  media: { type: [String], required: true}
+},{
+  strict: false,
+  timestamps: true,
 });
 
-const Album = new model('album', schema);
+const Album = model('album', schema);
 
 export default Album;

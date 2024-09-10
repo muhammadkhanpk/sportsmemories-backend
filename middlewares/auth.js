@@ -7,33 +7,6 @@ import User from '../models/user';
 
 const { HASHING_SECRET_KEY } = process.env;
 
-const GenerateTokenForPasswordResetLink = ({
-  userId,
-  email,
-  name
-},
-verify = false) => {
-  const expiryTime = '1d';
-  return {
-    token: jwt.sign({ userId, email, name }, HASHING_SECRET_KEY, {
-      expiresIn: expiryTime
-    }),
-    userId
-  };
-};
-
-const GenerateTokenForInviteUser = ({
-  email
-},
-verify = false) => {
-  const expiryTime = '3d';
-  return {
-    token: jwt.sign({ email }, HASHING_SECRET_KEY, {
-      expiresIn: expiryTime
-    })
-  };
-};
-
 const generateTokenResponse = ({
   email
 },
@@ -61,34 +34,6 @@ const loginCheck = (req, res, next) => {
     }
     next();
   })(req, res, next);
-};
-
-const checkUserSession = async (req, res, next) => {
-  let token = req.header('Authorization');
-
-  if (token.includes('Bearer ')) {
-    token = token.replace('Bearer ', '');
-  }
-
-  const loggedInUser = req.user;
-
-  if (!loggedInUser.token && loggedInUser.role !== 'admin') {
-    loggedInUser.token = token;
-
-    await User.updateOne({
-      email: loggedInUser.email
-    }, {
-      $set: {
-        token
-      }
-    });
-  }
-
-  if (token === loggedInUser.token || loggedInUser.role === 'admin' || loggedInUser.email === 'bizwithpurpose@gmail.com' || loggedInUser.email === 'team@qbatch.com') {
-    next();
-  } else {
-    return res.status(401).json({ message: 'You are login on a new device', success: false });
-  }
 };
 
 const LocalLoginStrategy = new LocalStrategy(
@@ -130,11 +75,11 @@ const AuthenticateAuthToken = (req, res, next) => {
     'jwt',
     { session: false },
     (err, user, info) => {
-      if (err) {
-        return res.status(404).send({ success: false, error: err?.message });
+      if (info?.message.includes('expired')) {
+        return res.status(401).send({ success: false, message: 'Authentication token is expired' });
       }
       if (!user) {
-        return res.status(404).json({ error: 'Your session has been expired!', success: false });
+        return res.status(401).json({ message: 'Unauthorized access.', success: false });
       }
       req.user = user;
       return next();
@@ -149,7 +94,7 @@ const AuthenticationStrategy = new JWTstrategy(
   },
   async (jwtPayload, done) => {
     try {
-      const user = await User.findById(jwtPayload.userId);
+      const user = await User.findOne({ email: jwtPayload.email });
       if (!user) return done(null, false);
 
       return done(null, user);
@@ -162,10 +107,7 @@ const AuthenticationStrategy = new JWTstrategy(
 export {
   AuthenticationStrategy,
   AuthenticateAuthToken,
-  GenerateTokenForPasswordResetLink,
-  GenerateTokenForInviteUser,
   generateTokenResponse,
   loginCheck,
-  LocalLoginStrategy,
-  checkUserSession
+  LocalLoginStrategy
 };

@@ -5,9 +5,12 @@ const schema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   userId: { type: String, required: true },
-  media: { type: [String], default: []}
+  media: { type: [String], required: true}
+}, {
+  timestamps: true,
+  strict: false
 });
 
-const Event = new model('event', schema);
+const Event = model('event', schema);
 
 export default Event;
