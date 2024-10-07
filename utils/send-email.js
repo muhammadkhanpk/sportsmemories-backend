@@ -15,10 +15,10 @@ export const SendEmail = async (email, subject, bodyPart) => {
     }
   });
 
-  // await transporter.sendMail({
-  //   from: process.env.FROM_EMAIL_ADDRESS,
-  //   to: email,
-  //   subject,
-  //   html: bodyPart
-  // });
+  await transporter.sendMail({
+    from: process.env.FROM_EMAIL_ADDRESS,
+    to: email,
+    subject,
+    html: bodyPart
+  });
 };

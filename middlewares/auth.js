@@ -26,7 +26,7 @@ const loginCheck = (req, res, next) => {
     }
     if (!user) {
       return res.status(401).json({
-        error: info.error,
+        message: info.error,
         susccess: false
       });
     } else {
@@ -57,7 +57,6 @@ const LocalLoginStrategy = new LocalStrategy(
       }
 
       const isValid = user?.validatePassword(password);
-      console.log('user data is ', {email, password})
       if (!isValid) {
         return done(null, false, {
           error: 'You have entered a wrong password'

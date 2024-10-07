@@ -30,13 +30,15 @@ router.post('/create-event', validateParams({
       name,
       description,
       userId,
-      media
+      eventType,
+      media,
     } = req.body;
     const response = await CreateEvent({
       name,
       description,
       userId,
-      media
+      eventType,
+      media,
     });
 
     res.status(200).json({
@@ -62,6 +64,7 @@ router.post('/update-event', validateParams({
       name,
       description,
       eventId,
+      eventType,
       media
     } = req.body;
 
@@ -75,6 +78,7 @@ router.post('/update-event', validateParams({
       name,
       description,
       eventId,
+      eventType,
       media
     });
 
@@ -138,13 +142,13 @@ router.get('/get-all-events', async (req, res) => {
   }
 })
 
-router.post('/get-event', validateParams({
+router.get('/get-event', validateParams({
   eventId: Joi.string().required(),
 }), async (req, res) => {
   try {
     const {
       eventId,
-    } = req.body;
+    } = req.query;
 
     const oldEvent = await Event.findOne({ _id: eventId });
     if (!oldEvent) {
@@ -198,13 +202,13 @@ router.post('/delete-event', validateParams({
   }
 });
 
-router.post('/get-user-events', validateParams({
+router.get('/get-user-events', validateParams({
   userId: Joi.string().required(),
 }), async (req, res) => {
   try {
     const {
       userId,
-    } = req.body;
+    } = req.query;
     const events = await GetUserEvents({
       userId
     });

@@ -4,7 +4,8 @@ const UpdateEvent = async({
   name,
   description,
   media,
-  eventId
+  eventId,
+  eventType
 }) => {
   const updatedEvent = await Event.findOneAndUpdate({
     _id: eventId  
@@ -13,6 +14,7 @@ const UpdateEvent = async({
       name,
       description,
       media,
+      eventType
     }
   }, {
     new: true

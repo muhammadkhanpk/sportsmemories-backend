@@ -7,7 +7,8 @@ import {
   DeleteAlbum,
   GetAlbum,
   UpdateAlbum,
-  UploadAlbumMedia
+  UploadAlbumMedia,
+  GetEventAlbums
 } from '../controllers/albums';
 
 import validateParams from '../middlewares/validate-params';
@@ -126,13 +127,13 @@ router.post('/upload-album-media', validateParams({
   }
 });
 
-router.post('/get-album', validateParams({
+router.get('/get-album', validateParams({
   albumId: Joi.string().required(),
 }), async (req, res) => {
   try {
     const {
       albumId,
-    } = req.body;
+    } = req.query;
 
     const oldAlbum = await Album.findOne({ _id: albumId });
     if (!oldAlbum) {
@@ -147,6 +148,30 @@ router.post('/get-album', validateParams({
     res.status(200).json({
       success: true,
       album
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.get('/get-event-albums', validateParams({
+  eventId: Joi.string().required(),
+}), async (req, res) => {
+  try {
+    const {
+      eventId,
+    } = req.query;
+    
+    const albums = await GetEventAlbums({
+      eventId
+    });
+
+    res.status(200).json({
+      success: true,
+      albums
     });
   } catch (err) {
     catchResponse({

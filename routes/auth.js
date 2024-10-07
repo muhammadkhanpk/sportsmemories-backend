@@ -6,7 +6,8 @@ import {
   SignIn,
   SignUp,
   VerifyOtp,
-  ResetPassword
+  ResetPassword,
+  ChangePassword
 } from '../controllers/auth';
 
 import { loginCheck } from '../middlewares/auth';
@@ -144,6 +145,32 @@ router.post('/reset-password', validateParams({
     res.status(200).json({
       success: true,
       message: 'Reset Password OTP Send Successfully.',
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.post('/change-password', validateParams({
+  email: Joi.string().required().email(),
+  newPassword: Joi.string().required(),
+  otp: Joi.number().required(),
+}), async (req, res) => {
+  try {
+    const { email, newPassword, otp } = req.body;
+
+    await ChangePassword({
+      email,
+      password: newPassword,
+      otp
+    });
+    
+    res.status(200).json({
+      success: true,
+      message: 'Password Changed Successfully.',
     });
   } catch (err) {
     catchResponse({

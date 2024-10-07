@@ -25,7 +25,6 @@ const VerifyOtp = async ({ email, otp }) => {
     {
       $set:{
         otpVerified: true,
-        otp: null,
         otpExpires: null
     }
   })

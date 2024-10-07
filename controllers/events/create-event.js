@@ -6,12 +6,14 @@ const CreateEvent = async({
   name,
   description,
   media,
+  eventType,
   userId
 }) => {
   const event = new Event({
     _id: new Types.ObjectId().toHexString(),
     name,
     description,
+    eventType,
     media,
     userId
   });
