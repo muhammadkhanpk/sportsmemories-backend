@@ -3,10 +3,19 @@ import { Schema, model } from 'mongoose';
 
 const schema = new Schema({
   _id: { type: String },
-  name: {
+  firstName: {
     type: String,
     trim: true,
     required: true
+  },
+  lastName: {
+    type: String,
+    trim: true,
+    required: true
+  },
+  sportsClubName: {
+    type: String,
+    trim: true,
   },
   email: {
     type: String,

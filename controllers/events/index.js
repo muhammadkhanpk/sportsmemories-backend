@@ -5,6 +5,9 @@ import GetAllEvents from "./get-all-events";
 import UpdateEvent from "./update-event";
 import GetUserEvents from "./get-user-events";
 import UploadEventMedia from "./upload-event-media";
+import MarkAsFavourite from "./mark-as-favourite";
+import CheckIsFavourite from "./check-is-favourite";
+import GetUserFavourites from "./get-user-favourites";
 
 export {
   CreateEvent,
@@ -13,5 +16,8 @@ export {
   GetAllEvents,
   UpdateEvent,
   GetUserEvents,
-  UploadEventMedia
+  UploadEventMedia,
+  MarkAsFavourite,
+  CheckIsFavourite,
+  GetUserFavourites
 }

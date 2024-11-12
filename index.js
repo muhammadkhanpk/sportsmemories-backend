@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 
-import './config/database';
+import './config/index';
 import ApplyMiddlewares from './middlewares';
 import router from './routes';
 import { createSocketServer } from './socket-io';

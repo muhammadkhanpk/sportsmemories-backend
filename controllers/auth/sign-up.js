@@ -2,14 +2,15 @@ import { Types } from 'mongoose';
 
 import User from '../../models/user';
 
-import { generateTokenResponse } from '../../middlewares/auth';
 import { sendOTPEmail } from '../../utils/email-templates';
 import { SendEmail } from '../../utils/send-email';
 import { generateOTP } from '../../utils/helpers';
 
 const SignUp = async ({
-  name,
   email,
+  firstName,
+  lastName,
+  sportsClubName,
   password,
   skills,
   experience,
@@ -29,8 +30,10 @@ const SignUp = async ({
 
     user = new User({
       _id: new Types.ObjectId().toHexString(),
-      name,
       email,
+      firstName,
+      lastName,
+      sportsClubName,
       password,
       skills,
       experience,
@@ -47,7 +50,7 @@ const SignUp = async ({
     email,
     'Signup OTP Email!',
     sendOTPEmail({
-        name,
+        name: `${firstName} ${lastName}`,
         otp,
       })
   ).then(() => { console.log('email link is sended'); });

@@ -1,7 +1,6 @@
 import express from 'express';
 import Joi from 'joi';
 
-import User from '../models/user';
 import {
   SignIn,
   SignUp,
@@ -18,18 +17,26 @@ import catchResponse from '../utils/catch-response';
 const router = express.Router();
 
 router.post('/sign-up', validateParams({
-  name: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  sportsClubName: Joi.string().required(),
   email: Joi.string().required().email(),
   password: Joi.string().required().min(8)
 }), async (req, res) => {
   try {
     const {
       email,
-      name,
+      firstName,
+      lastName,
+      sportsClubName,
       password
     } = req.body;
     const response = await SignUp({
-      name, email, password
+      email,
+      firstName,
+      lastName,
+      sportsClubName,
+      password
     });
 
     res.status(200).json({
@@ -45,7 +52,8 @@ router.post('/sign-up', validateParams({
 });
 
 router.post('/sign-up-coach', validateParams({
-  name: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
   email: Joi.string().required().email(),
   password: Joi.string().required().min(8),
   skills: Joi.string().required(),
@@ -56,7 +64,8 @@ router.post('/sign-up-coach', validateParams({
   try {
     const {
       email,
-      name,
+      firstName,
+      lastName,
       password,
       skills,
       experience,
@@ -64,7 +73,8 @@ router.post('/sign-up-coach', validateParams({
       hourlyrate
     } = req.body;
     const response = await SignUp({
-      name,
+      firstName,
+      lastName,
       email,
       password,
       skills,

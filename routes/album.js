@@ -129,20 +129,23 @@ router.post('/upload-album-media', validateParams({
 
 router.get('/get-album', validateParams({
   albumId: Joi.string().required(),
+  eventId: Joi.string().required(),
 }), async (req, res) => {
   try {
     const {
       albumId,
+      eventId
     } = req.query;
 
-    const oldAlbum = await Album.findOne({ _id: albumId });
+    const oldAlbum = await Album.findOne({ _id: albumId, eventId });
     if (!oldAlbum) {
       const error = new Error('Album is not found!');
       throw error;
     }
     
     const album = await GetAlbum({
-      albumId
+      albumId,
+      eventId
     });
 
     res.status(200).json({

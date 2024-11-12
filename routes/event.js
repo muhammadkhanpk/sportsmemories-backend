@@ -10,7 +10,10 @@ import {
   GetEvent,
   GetUserEvents,
   UpdateEvent,
-  UploadEventMedia
+  UploadEventMedia,
+  MarkAsFavourite,
+  CheckIsFavourite,
+  GetUserFavourites
 } from '../controllers/events';
 
 import validateParams from '../middlewares/validate-params';
@@ -24,6 +27,7 @@ router.post('/create-event', validateParams({
   description: Joi.string().min(10).required(),
   media: Joi.array().items(Joi.string()).min(1).required(),
   userId: Joi.string().required(),
+  eventType: Joi.string().required(),
 }), async (req, res) => {
   try {
     const {
@@ -58,6 +62,7 @@ router.post('/update-event', validateParams({
   description: Joi.string().min(10).required(),
   media: Joi.array().items(Joi.string()).min(1).required(),
   eventId: Joi.string().required(),
+  eventType: Joi.string().required(),
 }), async (req, res) => {
   try {
     const {
@@ -112,7 +117,8 @@ router.post('/upload-event-media', validateParams({
 
     const response = await UploadEventMedia({
       eventId,
-      newMedia: media
+      newMedia: media,
+      name: 'Uncategorized'
     });
 
     res.status(200).json({
@@ -216,6 +222,84 @@ router.get('/get-user-events', validateParams({
     res.status(200).json({
       success: true,
       events
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.post('/mark-as-favourite',  async (req, res) => {
+  try {
+    const {
+      userId,
+      dataType,
+      url,
+      eventId 
+    } = req.body || {};
+    const response = await MarkAsFavourite({
+      url,
+      dataType,
+      userId,
+      eventId
+    });
+
+    res.status(200).json({
+      success: true,
+      ... response
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.get('/check-is-favourite', async (req, res) => {
+  try {
+    const {
+      userId,
+      url,
+      eventId
+    } = req.query;
+    const isFavourite = await CheckIsFavourite({
+      userId,
+      url,
+      eventId
+    });
+
+    res.status(200).json({
+      success: true,
+      isFavourite
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.get('/get-user-favourites', validateParams({
+  userId: Joi.string().required(),
+  dataType: Joi.string().required()
+}), async (req, res) => {
+  try {
+    const {
+      userId,
+      dataType
+    } = req.query;
+    const userFavourites = await GetUserFavourites({
+      userId,
+      dataType
+    });
+
+    res.status(200).json({
+      success: true,
+      userFavourites
     });
   } catch (err) {
     catchResponse({

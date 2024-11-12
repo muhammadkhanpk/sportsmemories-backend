@@ -11,7 +11,7 @@ const generateTokenResponse = ({
   email
 },
 verify = false) => {
-  const expiryTime = '7d';
+  const expiryTime = '365d';
   return {
     token: jwt.sign({ email }, HASHING_SECRET_KEY, {
       expiresIn: expiryTime
