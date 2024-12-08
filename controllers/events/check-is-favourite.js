@@ -1,17 +1,18 @@
+import { extend } from 'lodash'
+
 import FavouriteData from "../../models/favourite-data";
 
-const CheckIsFavourite = async ({ eventId, userId, url }) => {
-  if (!userId) return false;
-
-  const query = {
+const CheckIsFavourite = async ({ eventId, userId, url, dataType }) => {
+  const filter = {
+    eventId,
     userId,
-    $or: [
-      { eventId: eventId || null },
-      { url: url || null }
-    ]
+    dataType
   };
 
-  const favourite = await FavouriteData.findOne(query);
+  if (url) {
+    extend(filter, { url });
+  }
+  const favourite = await FavouriteData.findOne(filter);
   return Boolean(favourite);
 };
 

@@ -4,11 +4,18 @@ const UpdateCoachStatus = async ({
   userId,
   status
 }) => {
-  const user = await User.findOne({ _id: userId });
+  let user = await User.findOne({ _id: userId });
   if (user) {
-    user.isCoachActive = status;
-    await user.save();
-    return user;
+    const updatedStatusCoach = await User.findOneAndUpdate({
+      _id: userId
+    }, {
+      $set: {
+        isCoachActive: Boolean(status)
+      }
+    }, {
+      new: true
+    })
+    return updatedStatusCoach.toObject();
   }
 
   const err = new Error();

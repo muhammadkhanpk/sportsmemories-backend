@@ -2,22 +2,27 @@ import User from '../../models/user';
 
 const UpdateUserPassword = async ({
   userId,
-  password
+  newPassword,
+  oldPassword
 }) => {
   const user = await User.findOne({ _id: userId });
-  if (user && password) {
-    user.password = password;
-
-    await user.save();
-
-    return 'Password Updated Successfully!';
+  if (!user) {
+    throw new Error('User not found!')
   }
+  if (user && newPassword && oldPassword) {
+    const isValidPassword = user.validatePassword(oldPassword);
 
-  const err = new Error();
-  err.message = 'User not found';
-  err.status = 400;
+    if (isValidPassword) {
+      user.password = newPassword;
+      await user.save();
+    } else {
+      const err = new Error();
+      err.message = 'Your old password is not valid';
+      err.status = 400;
 
-  throw err;
+      throw err;
+    }
+  } 
 };
 
 export default UpdateUserPassword;

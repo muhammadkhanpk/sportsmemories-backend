@@ -2,12 +2,108 @@ import express from 'express';
 
 import {
   CreateCustomer,
-  UpdateCustomer
+  UpdateCustomer,
+  CreatePaymentIntent,
+  SavePayment,
+  GetAllPayments,
+  GetCoachPayments
 } from '../controllers/stripe';
 
 import catchResponse from '../utils/catch-response';
+import validateParams from '../middlewares/validate-params';
+import Joi from 'joi';
 
 const router = express.Router();
+
+router.post('/create-payment-intent', async (req, res) => {
+  try {
+    const {
+      currency = 'usd',
+      amount
+    } = req.body;
+    const response = await CreatePaymentIntent({
+      currency,
+      amount,
+    });
+
+    res.status(200).json({
+      clientSecret: response
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.post('/save-payment', async (req, res) => {
+  try {
+    const {
+      currency = 'usd',
+      amount,
+      userId,
+      coachId,
+      ...rest
+    } = req.body;
+    const response = await SavePayment({
+      currency,
+      amount,
+      userId,
+      coachId,
+      data: rest
+    });
+
+    res.status(200).json({
+      success: true,
+      ...response
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.get('/get-coach-payments', validateParams({
+  coachId: Joi.string().required(),
+}), async (req, res) => {
+  try {
+    const {
+      coachId,
+    } = req.query;
+    
+    const payments = await GetCoachPayments({
+      coachId
+    });
+
+    res.status(200).json({
+      success: true,
+      payments
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.get('/get-all-payments', async (req, res) => {
+  try {
+    const payments = await GetAllPayments({});
+    res.status(200).json({
+      success: true,
+      payments
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
 
 router.post('/create-customer', async (req, res) => {
   try {

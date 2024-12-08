@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import Group from '../../models/group';
+import Chat from '../../models/chat';
 
 const CreateGroup = async({
   name,
@@ -17,6 +18,15 @@ const CreateGroup = async({
     groupType
   });
   await group.save();
+  //creating user empty chat when he create a new group
+  const chat = new Chat({
+    _id: new Types.ObjectId().toHexString(),
+    roomId: group._id,
+    userId,
+    lastMessage: '',
+    isGroup: true
+  });
+  await chat.save();
   return group.toObject();
 }
 

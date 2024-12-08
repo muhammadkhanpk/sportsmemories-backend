@@ -4,7 +4,7 @@ import FavouriteData from '../../models/favourite-data';
 const MarkAsFavourite = async ({ userId, dataType, eventId, url }) => {
   if (!userId) return { message: 'User ID is required', isFavourite: false };
 
-  const query = eventId ? { eventId, userId } : { url, userId };
+  const query = dataType === 'event' ? { eventId, userId, dataType } : { url, userId };
   let favourite = await FavouriteData.findOne(query);
 
   if (favourite) {

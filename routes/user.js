@@ -1,19 +1,23 @@
-import express from 'express';
+import express from "express";
+import Joi from "joi";
 
+import validateParams from "../middlewares/validate-params";
 import {
   DeleteUser,
   GetUser,
   UpdateProfileInfo,
   UpdateUserPassword,
   GetAllUsers,
-  GetAllCoaches
-} from '../controllers/users';
+  GetAllCoaches,
+  UpdateCoachStatus,
+} from "../controllers/users";
 
-import catchResponse from '../utils/catch-response';
+import catchResponse from "../utils/catch-response";
+import { sleep } from "../utils/helpers";
 
 const router = express.Router();
 
-router.get('/get-user', async (req, res) => {
+router.get("/get-user", async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -21,54 +25,110 @@ router.get('/get-user', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      user
+      user,
     });
   } catch (err) {
     catchResponse({
       res,
-      err
+      err,
     });
   }
 });
 
-router.get('/get-all-users', async (req, res) => {
+router.get("/get-all-users", async (req, res) => {
   try {
-    const {
-      searchKeyword,
-      limit,
-      skip
-    } = req.query;
+    const { searchKeyword, limit, skip } = req.query;
 
     const response = await GetAllUsers({
       searchKeyword,
       limit,
-      skip
+      skip,
     });
 
     res.status(200).json({
       success: true,
-      ...response
+      users: response,
     });
   } catch (err) {
     catchResponse({
       res,
-      err
+      err,
     });
   }
 });
 
-router.get('/get-all-coaches', async (req, res) => {
+router.get("/get-all-coaches", async (req, res) => {
   try {
+    const { searchKeyword, limit, skip } = req.query;
+
     const {
-      searchKeyword,
-      limit,
-      skip
-    } = req.query;
+      _id: userId,
+    } = req.user;
 
     const response = await GetAllCoaches({
       searchKeyword,
       limit,
-      skip
+      skip,
+      userId
+    });
+
+    res.status(200).json({
+      success: true,
+      coaches: response,
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err,
+    });
+  }
+});
+
+router.post(
+  "/update-coach-status",
+  validateParams({
+    userId: Joi.string().required(),
+    status: Joi.boolean().required(),
+  }),
+  async (req, res) => {
+    try {
+      const { userId, status } = req.body;
+
+      const user = await UpdateCoachStatus({ userId, status });
+
+      res.status(200).json({
+        success: true,
+        message: "Coach status updated Successfully!",
+        user
+      });
+    } catch (err) {
+      catchResponse({
+        res,
+        err,
+      });
+    }
+  }
+);
+
+router.post('/update-profile-info', async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      sportsClubName,
+      profileImage,
+      bio,
+      userId,
+      payPalEmail
+    } = req.body || {};
+    const response = await UpdateProfileInfo({
+      firstName,
+      lastName,
+      sportsClubName,
+      profileImage,
+      bio,
+      userId,
+      payPalEmail
     });
 
     res.status(200).json({
@@ -83,68 +143,37 @@ router.get('/get-all-coaches', async (req, res) => {
   }
 });
 
-router.post('/update-profile-info', async (req, res) => {
-  try {
-    const {
-      _id
-    } = req.user;
+router.post(
+  "/update-user-password",
+  validateParams({
+    userId: Joi.string().required(),
+    oldPassword: Joi.string().required(),
+    newPassword: Joi.string().required(),
+  }),
+  async (req, res) => {
+    try {
+      const { userId, newPassword, oldPassword } = req.body;
 
-    const {
-      impersonateUserId,
-      name,
-      newPassword,
-      oldPassword
-    } = req.body;
+      const message = await UpdateUserPassword({
+        userId,
+        newPassword,
+        oldPassword
+      });
 
-    let userId = _id;
-    if (impersonateUserId) {
-      userId = impersonateUserId;
+      res.status(200).json({
+        success: true,
+        message,
+      });
+    } catch (err) {
+      catchResponse({
+        res,
+        err,
+      });
     }
-
-    await UpdateProfileInfo({
-      userId,
-      name,
-      newPassword,
-      oldPassword
-    });
-
-    res.status(200).json({
-      success: true,
-      message: 'Account Info Updated!'
-    });
-  } catch (err) {
-    catchResponse({
-      res,
-      err
-    });
   }
-});
+);
 
-router.post('/update-user-password', async (req, res) => {
-  try {
-    const {
-      userId,
-      password
-    } = req.body;
-
-    const message = await UpdateUserPassword({
-      userId,
-      password
-    });
-
-    res.status(200).json({
-      success: true,
-      message
-    });
-  } catch (err) {
-    catchResponse({
-      res,
-      err
-    });
-  }
-});
-
-router.post('/delete-user', async (req, res) => {
+router.post("/delete-user", async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -152,12 +181,12 @@ router.post('/delete-user', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'User has deleted Successfully!'
+      message: "User has deleted Successfully!",
     });
   } catch (err) {
     catchResponse({
       res,
-      err
+      err,
     });
   }
 });

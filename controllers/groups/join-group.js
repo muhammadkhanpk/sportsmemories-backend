@@ -1,10 +1,22 @@
 import { Types } from 'mongoose';
 import UserGroup from '../../models/user-groups';
+import Chat from '../../models/chat';
 
 const JoinGroup = async({
  userId,
  groupId
 }) => {
+  await Chat.updateOne(
+    { roomId: groupId, userId },
+    {
+      $setOnInsert: {
+        _id: new Types.ObjectId().toHexString(),
+        lastMessage: ''
+      },
+      $set: { isGroup: true },
+    },
+    { upsert: true }
+  );
   const alreadyJoined = await UserGroup.findOne({
     userId,
     groupId
@@ -19,7 +31,8 @@ const JoinGroup = async({
     userId,
     groupId
   });
-  await joinGroup.save();
+  await joinGroup.save()
+
   return joinGroup.toObject();
 }
 

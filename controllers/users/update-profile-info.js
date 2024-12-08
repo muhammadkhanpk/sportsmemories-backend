@@ -3,40 +3,35 @@ import { extend } from 'lodash';
 import User from '../../models/user';
 
 const UpdateProfileInfo = async ({
+  firstName,
+  lastName,
+  sportsClubName,
+  profileImage,
+  bio,
   userId,
-  name,
-  newPassword,
-  oldPassword
+  payPalEmail
 }) => {
-  const setObj = {};
-
-  if (name) {
-    extend(setObj, { name });
-  }
-
   const user = await User.findOne({ _id: userId });
 
-  if (user && newPassword && oldPassword) {
-    const isValidPassword = user.validatePassword(oldPassword);
-
-    if (isValidPassword) {
-      user.name = name;
-      user.password = newPassword;
-      await user.save();
-    } else {
-      const err = new Error();
-      err.message = 'Your old password is not valid';
-      err.status = 400;
-
-      throw err;
-    }
-  } else {
-    await User.updateOne({ _id: userId }, {
-      $set: {
-        ...setObj
-      }
-    });
+  if (!user) {
+    throw new Error('User not found!')
   }
+
+  const updatedUser = await User.findOneAndUpdate({
+    _id: userId  
+  }, {
+    $set: {
+      firstName,
+      lastName,
+      sportsClubName,
+      profileImage,
+      bio,
+      payPalEmail
+    }
+  }, {
+    new: true,
+  })
+  return updatedUser.toObject();
 };
 
 export default UpdateProfileInfo;

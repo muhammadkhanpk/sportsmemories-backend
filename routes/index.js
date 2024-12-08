@@ -5,10 +5,12 @@ import event from './event';
 import album from './album';
 import group from './group';
 import files from './files';
-
-import stripe from './stripe';
+import tags from './tags';
 import user from './user';
-
+import feedbacks from './feedbacks';
+import stripe from './stripe';
+import message from './message';
+import notification from './notification';
 
 import { AuthenticateAuthToken, checkUserSession } from '../middlewares/auth';
 
@@ -19,7 +21,11 @@ router.use('/event', AuthenticateAuthToken, event);
 router.use('/album', AuthenticateAuthToken, album);
 router.use('/group', AuthenticateAuthToken, group);
 router.use('/file', AuthenticateAuthToken, files);
-// router.use('/stripe', AuthenticateAuthToken, checkUserSession, stripe);
-// router.use('/user', AuthenticateAuthToken, checkUserSession, user);
+router.use('/tags', AuthenticateAuthToken, tags);
+router.use('/user', AuthenticateAuthToken, user);
+router.use('/feedback', AuthenticateAuthToken, feedbacks);
+router.use('/message', AuthenticateAuthToken, message);
+router.use('/notification', AuthenticateAuthToken, notification);
+router.use('/stripe', stripe);
 
 export default router;

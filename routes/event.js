@@ -263,12 +263,14 @@ router.get('/check-is-favourite', async (req, res) => {
     const {
       userId,
       url,
-      eventId
+      eventId,
+      dataType
     } = req.query;
     const isFavourite = await CheckIsFavourite({
       userId,
       url,
-      eventId
+      eventId,
+      dataType
     });
 
     res.status(200).json({

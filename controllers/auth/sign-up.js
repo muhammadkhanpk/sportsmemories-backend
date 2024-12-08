@@ -27,6 +27,7 @@ const SignUp = async ({
     }
 
     const otp = generateOTP();
+    const isCoachActive = role === 'coach' ? false : undefined 
 
     user = new User({
       _id: new Types.ObjectId().toHexString(),
@@ -42,7 +43,8 @@ const SignUp = async ({
       role: role ? 'coach' : 'user',
       otp,
       status: 'Registered',
-      otpVerified: false
+      otpVerified: false,
+      isCoachActive
     });
     await user.save();
 
