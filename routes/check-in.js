@@ -1,33 +1,67 @@
 import express from 'express';
 import catchResponse from '../utils/catch-response';
 import {
-  AddTag,
-  GetTags,
-  UpdateTag
-} from '../controllers/tags';
+  SaveCheckIn,
+  GetCheckIn
+} from '../controllers/check-in';
 import validateParams from '../middlewares/validate-params';
 import Joi from 'joi';
-import Tags from '../models/tags';
-
 const router = express.Router();
 
-router.post('/add-tag', validateParams({
-  tag: Joi.string().required(),
-  url: Joi.string().required(),
+router.post('/save-check-in', validateParams({
+  question1: Joi.number().required(),
+  question2: Joi.number().required(),
+  question3: Joi.number().required(),
+  question4: Joi.number().required(),
+  question5: Joi.number().required(),
 }), async (req, res) => {
   try {
     const {
-      tag,
-      url
-    } = req.body;
-    const response = await AddTag({
-      url,
-      tag
+      _id: userId
+    } = req.user;
+
+    const {
+      question1,
+      question2,
+      question3,
+      question4,
+      question5,
+    } = req.body || {}
+    
+    const response = await SaveCheckIn({
+      userId,
+      question1,
+      question2,
+      question3,
+      question4,
+      question5,
     });
 
     res.status(200).json({
       success: true,
       ...response
+    });
+  } catch (err) {
+    catchResponse({
+      res,
+      err
+    });
+  }
+});
+
+router.get('/get-check-in', async (req, res) => {
+  try {
+    const {
+      _id: userId,
+    } = req.user;
+    
+    const checkin = await GetCheckIn({
+      userId
+    });
+
+    res.status(200).json({
+      success: true,
+      ...checkin
     });
   } catch (err) {
     catchResponse({

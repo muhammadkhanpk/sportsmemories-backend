@@ -51,8 +51,14 @@ router.get('/get-notification-settings', validateParams({
 
     const oldNoti = await NotificationSettings.findOne({ userId });
     if (!oldNoti) {
-      const error = new Error('Notification settings is not found!');
-      throw error;
+      res.status(200).json({
+        success: true,
+        inbox: false,
+        events: false,
+        account: false,
+        promotions: false,
+        userId
+      });
     }
     
     const noti = await GetNotificationSettings({

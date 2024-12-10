@@ -11,6 +11,8 @@ import feedbacks from './feedbacks';
 import stripe from './stripe';
 import message from './message';
 import notification from './notification';
+import checkin from './check-in';
+import categories from './categories';
 
 import { AuthenticateAuthToken, checkUserSession } from '../middlewares/auth';
 
@@ -26,6 +28,8 @@ router.use('/user', AuthenticateAuthToken, user);
 router.use('/feedback', AuthenticateAuthToken, feedbacks);
 router.use('/message', AuthenticateAuthToken, message);
 router.use('/notification', AuthenticateAuthToken, notification);
+router.use('/checkin', AuthenticateAuthToken, checkin);
 router.use('/stripe', stripe);
+router.use('/category', categories);
 
 export default router;
