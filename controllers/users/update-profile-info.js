@@ -9,7 +9,8 @@ const UpdateProfileInfo = async ({
   profileImage,
   bio,
   userId,
-  payPalEmail
+  payPalEmail,
+  fcmToken
 }) => {
   const user = await User.findOne({ _id: userId });
 
@@ -26,7 +27,8 @@ const UpdateProfileInfo = async ({
       sportsClubName,
       profileImage,
       bio,
-      payPalEmail
+      payPalEmail,
+      fcmToken
     }
   }, {
     new: true,

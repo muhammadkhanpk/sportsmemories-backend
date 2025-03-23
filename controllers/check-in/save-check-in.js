@@ -10,6 +10,11 @@ const SaveCheckIn = async ({
   question3,
   question4,
   question5,
+  question1Msg,
+  question2Msg,
+  question3Msg,
+  question4Msg,
+  question5Msg
 }) => {
   // Calculate start and end of today
   const startOfDay = moment().startOf("day").toDate(); // Start of today (00:00:00)
@@ -51,6 +56,11 @@ const SaveCheckIn = async ({
     behavioral,
     overallScore,
     intensityLevel,
+    question1Msg,
+    question2Msg,
+    question3Msg,
+    question4Msg,
+    question5Msg
   });
   await checkin.save();
   return checkin.toObject();

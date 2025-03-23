@@ -14,6 +14,11 @@ router.post('/save-check-in', validateParams({
   question3: Joi.number().required(),
   question4: Joi.number().required(),
   question5: Joi.number().required(),
+  question1Msg: Joi.number().required(),
+  question2Msg: Joi.number().required(),
+  question3Msg: Joi.number().required(),
+  question4Msg: Joi.number().required(),
+  question5Msg: Joi.number().required(),
 }), async (req, res) => {
   try {
     const {
@@ -26,6 +31,11 @@ router.post('/save-check-in', validateParams({
       question3,
       question4,
       question5,
+      question1Msg,
+      question2Msg,
+      question3Msg,
+      question4Msg,
+      question5Msg
     } = req.body || {}
     
     const response = await SaveCheckIn({
@@ -35,6 +45,11 @@ router.post('/save-check-in', validateParams({
       question3,
       question4,
       question5,
+      question1Msg,
+      question2Msg,
+      question3Msg,
+      question4Msg,
+      question5Msg
     });
 
     res.status(200).json({

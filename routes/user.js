@@ -119,7 +119,8 @@ router.post('/update-profile-info', async (req, res) => {
       profileImage,
       bio,
       userId,
-      payPalEmail
+      payPalEmail,
+      fcmToken
     } = req.body || {};
     const response = await UpdateProfileInfo({
       firstName,
@@ -128,7 +129,8 @@ router.post('/update-profile-info', async (req, res) => {
       profileImage,
       bio,
       userId,
-      payPalEmail
+      payPalEmail,
+      fcmToken
     });
 
     res.status(200).json({
